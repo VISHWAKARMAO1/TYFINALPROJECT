@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Auth — Dr PDF Pro</title>
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-1:#0b0f14;
+      --bg-2:#182033;
+      --glass: rgba(255,255,255,0.05);
+      --accent-start:#ff6b6b;
+      --accent-end:#845ef7;
+      --muted: rgba(255,255,255,0.6);
+      --glass-blur: 18px;
+      --card-radius:16px;
+      --transition: 280ms ease;
+      --input-radius:10px;
+      --btn-radius:12px;
+      --max-width:460px;
+      font-synthesis: none;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: 'Inter', 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      color:#eaf0ff;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(132,94,247,0.08), transparent 6%),
+                  radial-gradient(900px 500px at 90% 90%, rgba(255,107,107,0.06), transparent 6%),
+                  linear-gradient(180deg, var(--bg-1), var(--bg-2));
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    /* Soft particle background */
+    .bg-particles{position:absolute;inset:0;pointer-events:none;opacity:0.45}
+    .bg-particles span{position:absolute;border-radius:999px;background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.06), rgba(255,255,255,0.01));filter:blur(24px);animation:float 12s linear infinite}
+    .bg-particles span.s1{width:220px;height:220px;left:-40px;top:-40px;animation-duration:18s}
+    .bg-particles span.s2{width:160px;height:160px;right:-30px;bottom:10px;animation-duration:20s}
+    .bg-particles span.s3{width:100px;height:100px;left:20%;bottom:-20px;animation-duration:16s}
+    @keyframes float{0%{transform:translateY(0) rotate(0)}50%{transform:translateY(-24px) rotate(8deg)}100%{transform:translateY(0) rotate(0)}}
+
+    /* Centered card */
+    .glass-card{
+      width:100%;
+      max-width:var(--max-width);
+      background: var(--glass);
+      border-radius:var(--card-radius);
+      padding:28px;
+      box-shadow: 0 8px 30px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid rgba(255,255,255,0.04);
+      position:relative;
+      z-index:2;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .glass-card:after{
+      content:'';position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;background:linear-gradient(120deg, rgba(132,94,247,0.12), rgba(255,107,107,0.08));filter:blur(18px);opacity:0.08}
+
+    header.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand .logo{width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,var(--accent-start),var(--accent-end));display:flex;align-items:center;justify-content:center;font-weight:700;color:white}
+
+    /* Tabs */
+    .tabs{display:flex;gap:8px;margin-bottom:18px}
+    .tab{background:transparent;border:0;color:var(--muted);padding:8px 14px;border-radius:999px;font-weight:600;cursor:pointer;position:relative;transition:all var(--transition);}
+    .tab:focus{outline:none}
+    .tab.active{color:white}
+    .tab.active:after{content:'';position:absolute;left:8px;right:8px;height:3px;border-radius:999px;bottom:-6px;background:linear-gradient(90deg,var(--accent-start),var(--accent-end));box-shadow:0 6px 22px rgba(132,94,247,0.16);transition:all var(--transition);}
+
+    .pane{opacity:0;transform:translateY(8px);max-height:0;overflow:hidden;transition:opacity 320ms ease, transform 320ms ease, max-height 320ms ease;padding-bottom:0}
+    .pane.active{opacity:1;transform:translateY(0);max-height:2000px;padding-bottom:8px}
+
+    .form{display:flex;flex-direction:column;gap:12px}
+    .field{position:relative;display:flex;align-items:center;background:rgba(0,0,0,0.25);border-radius:var(--input-radius);padding:10px 12px;gap:10px;border:1px solid rgba(255,255,255,0.03);transition:box-shadow var(--transition), border-color var(--transition), transform var(--transition), background var(--transition)}
+    .field svg{width:18px;height:18px;flex:0 0 18px;opacity:0.9}
+    .field input{flex:1;background:transparent;border:0;color:inherit;font-size:15px;padding:8px 4px;outline:none}
+    .field input::placeholder{color:rgba(255,255,255,0.45)}
+    .field:focus-within{box-shadow:0 6px 30px rgba(132,94,247,0.06);border-color:rgba(132,94,247,0.18)}
+
+  /* Error message + shake animation for login */
+  #loginError{display:none;color:#ff4d4d;font-size:0.95rem;margin-top:8px;text-align:center;font-weight:600}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+  .shake{animation:shake 320ms ease}
+
+    .muted{color:var(--muted);font-size:13px;margin-top:8px}
+    .muted a{color:inherit;font-weight:600;text-decoration:none;color:rgba(255,255,255,0.85)}
+
+    .btn{border:0;cursor:pointer;padding:12px 14px;border-radius:var(--btn-radius);font-weight:700;color:white;background:linear-gradient(90deg,var(--accent-start),var(--accent-end));box-shadow:0 8px 28px rgba(132,94,247,0.12);transition:transform 220ms ease, box-shadow 220ms ease, opacity 220ms ease}
+    .btn:active{transform:scale(0.995)}
+    .btn:hover{transform:scale(1.03);box-shadow:0 18px 48px rgba(132,94,247,0.18)}
+
+    /* small responsive tweaks */
+    @media (max-width:600px){.glass-card{padding:20px}body{padding:20px}}
+    @media (max-width:450px){:root{--max-width:420px}.glass-card{padding:16px;border-radius:12px}.tabs{gap:6px}.brand .logo{width:36px;height:36px}.muted{font-size:12px}}
+
+    /* Footer */
+    .auth-footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
+
+    /* small helper for input-icon spacing when label present */
+    label{display:block;font-size:13px;color:var(--muted);font-weight:600}
+    label .field{margin-top:8px}
+  </style>
+</head>
+<body class="page page-auth">
+  <div class="bg-particles" aria-hidden="true">
+    <span class="s1"></span>
+    <span class="s2"></span>
+    <span class="s3"></span>
+  </div>
+
+  <main class="auth-main" style="z-index:1;display:flex;align-items:center;justify-content:center;width:100%">
+    <div style="width:100%;max-width:var(--max-width);text-align:left">
+      <header class="topbar" style="margin-bottom:8px">
+        <div class="brand">
+          <div class="logo">DP</div>
+          <div class="title" style="font-weight:700">Dr PDF Pro</div>
+        </div>
+      </header>
+
+      <div class="glass-card" role="region" aria-labelledby="authTitle">
+        <h2 id="authTitle" style="margin:0 0 8px 0;font-size:20px">Welcome to Dr PDF Pro</h2>
+        <p style="margin:0 0 14px 0;color:var(--muted);font-size:13px">Securely access your PDF tools — sign in or create an account.</p>
+
+        <div class="tabs" role="tablist" aria-label="Authentication Tabs">
+          <button id="tab-login" class="tab active" role="tab" aria-selected="true" aria-controls="loginPane">Login</button>
+          <button id="tab-register" class="tab" role="tab" aria-selected="false" aria-controls="registerPane">Register</button>
+        </div>
+
+        <div id="loginPane" class="pane active" role="tabpanel">
+          <form id="loginForm" class="form" autocomplete="on">
+            <label for="loginId">Email or Username</label>
+            <div class="field">
+              <!-- user/email icon -->
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zM4 20.5c0-3.033 2.467-5.5 5.5-5.5h5c3.033 0 5.5 2.467 5.5 5.5v.5H4v-.5z" fill="rgba(255,255,255,0.85)"/></svg>
+              <input type="text" id="loginId" required placeholder="email or username" aria-label="Email or Username">
+            </div>
+
+            <label for="loginPassword">Password</label>
+            <div class="field">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M17 8V7a5 5 0 00-10 0v1H5v11h14V8h-2zM9 8a3 3 0 016 0v1H9V8z" fill="rgba(255,255,255,0.85)"/></svg>
+              <input type="password" id="loginPassword" required placeholder="password" aria-label="Password">
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:6px">
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)"><input id="rememberMe" type="checkbox" style="width:16px;height:16px"> Remember Me</label>
+            </div>
+
+            <div id="loginError" role="alert" aria-live="assertive" style="display:none;margin-top:8px;text-align:center;color:#ff6b6b;font-weight:600"></div>
+
+            <button class="btn" type="submit">Login</button>
+          </form>
+          <p class="muted">Don't have an account? <a href="#" id="gotoRegister">Create one</a></p>
+        </div>
+
+        <div id="registerPane" class="pane" role="tabpanel" aria-hidden="true">
+          <form id="registerForm" class="form" autocomplete="on">
+            <label for="regFullName">Full Name</label>
+            <div class="field">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zM4 20.5c0-3.033 2.467-5.5 5.5-5.5h5c3.033 0 5.5 2.467 5.5 5.5v.5H4v-.5z" fill="rgba(255,255,255,0.85)"/></svg>
+              <input type="text" id="regFullName" required placeholder="Full name" aria-label="Full name">
+            </div>
+
+            <label for="regEmail">Email</label>
+            <div class="field">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 6.5v11A2.5 2.5 0 004.5 20h15a2.5 2.5 0 002.5-2.5v-11A2.5 2.5 0 0019.5 4h-15A2.5 2.5 0 002 6.5zm3.5-.5h13l-6.5 5L5.5 6z" fill="rgba(255,255,255,0.85)"/></svg>
+              <input type="email" id="regEmail" required placeholder="you@example.com" aria-label="Email">
+            </div>
+
+            <label for="regUsername">Username</label>
+            <div class="field">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zM4 20.5c0-3.033 2.467-5.5 5.5-5.5h5c3.033 0 5.5 2.467 5.5 5.5v.5H4v-.5z" fill="rgba(255,255,255,0.85)"/></svg>
+              <input type="text" id="regUsername" required placeholder="username" aria-label="Username">
+            </div>
+
+            <label for="regPassword">Password</label>
+            <div class="field">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M17 8V7a5 5 0 00-10 0v1H5v11h14V8h-2zM9 8a3 3 0 016 0v1H9V8z" fill="rgba(255,255,255,0.85)"/></svg>
+              <input type="password" id="regPassword" required placeholder="password" aria-label="Password">
+            </div>
+
+            <label for="regConfirm">Confirm Password</label>
+            <div class="field">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M17 8V7a5 5 0 00-10 0v1H5v11h14V8h-2zM9 8a3 3 0 016 0v1H9V8z" fill="rgba(255,255,255,0.85)"/></svg>
+              <input type="password" id="regConfirm" required placeholder="confirm password" aria-label="Confirm password">
+            </div>
+
+            <button class="btn" type="submit">Create Account</button>
+          </form>
+          <p class="muted">Already have an account? <a href="#" id="gotoLogin">Sign in</a></p>
+        </div>
+
+        <div class="auth-footer">© Dr PDF Pro | Created by Ankit Vishwakarma | Roll No 136.</div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (function(){
+      // Tab switching with smooth fade+slide
+      const tabLogin = document.getElementById('tab-login');
+      const tabRegister = document.getElementById('tab-register');
+      const loginPane = document.getElementById('loginPane');
+      const registerPane = document.getElementById('registerPane');
+      const gotoRegister = document.getElementById('gotoRegister');
+      const gotoLogin = document.getElementById('gotoLogin');
+
+      function activateTab(which){
+        if(which==='login'){
+          tabLogin.classList.add('active'); tabLogin.setAttribute('aria-selected','true');
+          tabRegister.classList.remove('active'); tabRegister.setAttribute('aria-selected','false');
+
+          registerPane.classList.remove('active'); registerPane.setAttribute('aria-hidden','true');
+          // small delay to allow reverse animation
+          requestAnimationFrame(()=>{ loginPane.classList.add('active'); loginPane.setAttribute('aria-hidden','false'); });
+        } else {
+          tabRegister.classList.add('active'); tabRegister.setAttribute('aria-selected','true');
+          tabLogin.classList.remove('active'); tabLogin.setAttribute('aria-selected','false');
+
+          loginPane.classList.remove('active'); loginPane.setAttribute('aria-hidden','true');
+          requestAnimationFrame(()=>{ registerPane.classList.add('active'); registerPane.setAttribute('aria-hidden','false'); });
+        }
+      }
+
+      tabLogin.addEventListener('click',()=>activateTab('login'));
+      tabRegister.addEventListener('click',()=>activateTab('register'));
+      gotoRegister.addEventListener('click',(e)=>{e.preventDefault(); activateTab('register');});
+      gotoLogin.addEventListener('click',(e)=>{e.preventDefault(); activateTab('login');});
+
+      // Improve keyboard accessibility: allow arrow keys to switch tabs
+      [tabLogin, tabRegister].forEach((t,i,arr)=>{ t.addEventListener('keydown',(e)=>{ if(e.key==='ArrowRight' || e.key==='ArrowLeft'){ e.preventDefault(); const next = arr[(i + (e.key==='ArrowRight'?1: -1) + arr.length)%arr.length]; next.focus(); next.click(); } }); });
+    })();
+  </script>
+
+  <script>
+    // Full auth: Register + Login using localStorage
+    (function(){
+      const demoUser = { fullname: 'Demo User', email: 'demo@drpdf.local', username: 'demo' };
+
+      function getUsers(){ try{ return JSON.parse(localStorage.getItem('users')||'[]'); }catch(e){ return []; } }
+      function saveUsers(users){ try{ localStorage.setItem('users', JSON.stringify(users)); }catch(e){} }
+
+      function showError(el, msg){ if(!el) return alert(msg); el.textContent = msg; el.style.display = 'block'; el.classList.add('shake'); setTimeout(()=> el.classList.remove('shake'), 420); setTimeout(()=>{ try{ el.style.display='none'; }catch(e){} }, 3800); }
+
+      document.addEventListener('DOMContentLoaded', ()=>{
+  // If already authenticated, redirect to dashboard
+  try{ if (localStorage.getItem('isAuthenticated') === 'true') { window.location.replace('dashboard.html'); return; } } catch(e){}
+
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const loginError = document.getElementById('loginError');
+
+        // Prefill login email if present (after successful registration)
+        try{ const pending = localStorage.getItem('auth_prefill_email'); if(pending){ const li = document.getElementById('loginId'); if(li) li.value = pending; localStorage.removeItem('auth_prefill_email'); } }catch(e){}
+
+        // Registration handler
+        if(registerForm){
+          registerForm.addEventListener('submit', function(ev){
+            ev.preventDefault();
+            const fullname = (document.getElementById('regFullName')||{}).value.trim();
+            const email = (document.getElementById('regEmail')||{}).value.trim().toLowerCase();
+            const username = (document.getElementById('regUsername')||{}).value.trim();
+            const password = (document.getElementById('regPassword')||{}).value || '';
+            const confirm = (document.getElementById('regConfirm')||{}).value || '';
+
+            if(!fullname || !email || !username || !password || !confirm){ alert('All fields are required.'); return; }
+            // basic email validation
+            const emailRE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+            if(!emailRE.test(email)){ alert('Please enter a valid email address.'); return; }
+            if(password !== confirm){ alert('Passwords do not match.'); return; }
+
+            const users = getUsers();
+            if(users.find(u => u.email && u.email.toLowerCase() === email)){
+              alert('An account with this email already exists. Please login or use a different email.'); return;
+            }
+
+            // store the new user (note: passwords are stored in plain text for this demo only)
+            users.push({ fullname: fullname, email: email, username: username, password: password });
+            saveUsers(users);
+
+            // Success: notify and switch to login tab with prefilled email
+            alert('Registration successful! Please login now.');
+            try{ localStorage.setItem('auth_prefill_email', email); }catch(e){}
+            // switch to login tab
+            document.getElementById('tab-login').click();
+          });
+        }
+
+        // Login handler
+        if(loginForm){
+          loginForm.addEventListener('submit', function(ev){
+            ev.preventDefault();
+            const email = (document.getElementById('loginId')||{}).value.trim().toLowerCase();
+            const password = (document.getElementById('loginPassword')||{}).value || '';
+
+            if(!email || !password){ showError(loginError, 'Please enter email and password.'); return; }
+
+            // allow static demo credentials as well
+            if(email === 'demo' && password === '1234'){
+              try{ localStorage.setItem('isAuthenticated','true'); localStorage.setItem('loggedInUser', demoUser.email); localStorage.setItem('drpdf_currentUser', JSON.stringify({ fullname: demoUser.fullname, email: demoUser.email })); }catch(e){}
+              window.location.replace('dashboard.html'); return;
+            }
+
+            const users = getUsers();
+            // Allow login with either email OR username (case-insensitive)
+            const user = users.find(u => (
+              (u.email && u.email.toLowerCase() === email) ||
+              (u.username && u.username.toLowerCase() === email)
+            ) && u.password === password);
+            if(!user){ showError(loginError, 'Invalid Email or Password'); return; }
+
+            // successful login - prefer email as loggedInUser, fallback to username
+            try{
+              localStorage.setItem('isAuthenticated','true');
+              localStorage.setItem('loggedInUser', user.email || user.username);
+              localStorage.setItem('drpdf_currentUser', JSON.stringify({ fullname: user.fullname || user.username || user.email, email: user.email || '' }));
+            }catch(e){}
+            window.location.replace('dashboard.html');
+          });
+        }
+
+      });
+    })();
+  </script>
+</body>
+</html>

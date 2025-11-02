@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dr PDF Pro — Simplify PDFs</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="page page-home">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">DP</div>
+      <div class="title">Dr PDF Pro</div>
+    </div>
+    <nav class="nav">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="#features" class="nav-link">Features</a>
+      <a href="#about" class="nav-link">About</a>
+      <a href="auth.html" class="nav-link">Login</a>
+      <a href="auth.html" class="cta">Get Started</a>
+    </nav>
+  </header>
+
+  <main class="hero">
+    <div class="hero-content">
+      <h1>Simplify Your PDF Tasks in Minutes.</h1>
+      <p class="lead">Merge, Split, Compress, Encrypt, Edit and Manage PDFs — all in one place.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="auth.html">Get Started</a>
+        <button id="tryDemo" class="btn btn-ghost">Try Demo</button>
+      </div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <!-- minimal animated gradient / glowing shapes -->
+      <svg viewBox="0 0 600 400" class="glow">
+        <defs>
+          <linearGradient id="g1" x1="0" x2="1">
+            <stop offset="0%" stop-color="#f97316" />
+            <stop offset="100%" stop-color="#4f46e5" />
+          </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="600" height="400" fill="url(#g1)" opacity="0.06" />
+      </svg>
+    </div>
+  </main>
+
+  <section id="features" class="features">
+    <h2>All the tools you need</h2>
+    <div class="feature-grid">
+      <div class="feature">
+        <div class="ic">🔀</div>
+        <h3>Merge PDFs</h3>
+        <p>Combine multiple PDFs into one file quickly.</p>
+      </div>
+      <div class="feature">
+        <div class="ic">✂️</div>
+        <h3>Split PDFs</h3>
+        <p>Split large PDFs into smaller documents.</p>
+      </div>
+      <div class="feature">
+        <div class="ic">🗜️</div>
+        <h3>Compress</h3>
+        <p>Reduce file size while keeping quality.</p>
+      </div>
+      <div class="feature">
+        <div class="ic">🔒</div>
+        <h3>Encrypt/Decrypt</h3>
+        <p>Secure PDFs with passwords or remove them.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div>© Dr PDF Pro | Created by Ankit Vishwakarma | Roll No. 136.</div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script>
+    document.getElementById('tryDemo').addEventListener('click', () => {
+      // create a demo preview (visual-only). Do NOT set 'isAuthenticated'.
+      const demo = { fullName: 'Demo User', email: 'demo@drpdf.local', username: 'demo' };
+      try{
+        const users = JSON.parse(localStorage.getItem('drpdf_users') || '[]');
+        if (!users.find(u => u.username === 'demo')) {
+          users.push(demo);
+          localStorage.setItem('drpdf_users', JSON.stringify(users));
+        }
+        // set current user for display purposes only
+        localStorage.setItem('drpdf_currentUser', JSON.stringify(demo));
+        // mark demo preview; do NOT set isAuthenticated
+        localStorage.setItem('isDemo', 'true');
+        // ensure any previous authenticated session is not confused
+        localStorage.removeItem('isAuthenticated');
+        localStorage.removeItem('isLoggedIn');
+      }catch(e){/* ignore */}
+      // open dashboard in preview mode
+      window.location.href = 'dashboard.html';
+    });
+  </script>
+</body>
+</html>
