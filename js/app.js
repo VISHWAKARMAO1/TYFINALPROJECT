@@ -28,6 +28,9 @@
   // Page-specific init
   document.addEventListener('DOMContentLoaded', () => {
     const body = document.body;
+    // Reflect auth/demo state on body for CSS hooks
+    try{ body.classList.toggle('demo-mode', localStorage.getItem('isDemo') === 'true'); }catch(e){}
+    try{ body.classList.toggle('authenticated', (localStorage.getItem('isAuthenticated') === 'true') || (sessionStorage.getItem('isAuthenticated') === 'true')); }catch(e){}
     // Global auth guard: if visiting protected pages (dashboard or tools) and not authenticated, redirect to auth.
     const toolPages = ['merge.html','split.html','compress.html','extract.html','encrypt.html','decrypt.html','ocr.html','watermark.html','editor.html'];
     const protectedPages = ['dashboard.html', ...toolPages];

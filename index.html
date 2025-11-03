@@ -5,6 +5,44 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Dr PDF Pro — Simplify PDFs</title>
   <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* Enhanced soft glowing background for hero (deep charcoal + warm orange tones)
+       - Multiple blurred radial orbs drift slowly (10-16s) for a subtle cinematic feel
+       - Reduced motion & brightness on small screens for readability/perf
+    */
+    .glow-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+    .glow-orb{position:absolute;border-radius:50%;filter:blur(72px);opacity:0.9;mix-blend-mode:screen;will-change:transform,opacity}
+
+    /* Large warm orb behind the left of hero */
+    .glow-orb.o1{width:720px;height:520px;left:-18%;top:-8%;background:radial-gradient(circle at 30% 30%, rgba(255,160,72,0.18), rgba(255,124,0,0.06) 40%, transparent 68%);animation:drift1 14s linear infinite alternate}
+    /* Subtle amber fill to the right/bottom */
+    .glow-orb.o2{width:520px;height:420px;right:-12%;bottom:-6%;background:radial-gradient(circle at 25% 30%, rgba(255,200,120,0.12), rgba(255,140,40,0.04) 45%, transparent 70%);animation:drift2 12s linear infinite alternate}
+    /* Small focused warm rim near hero CTA */
+    .glow-orb.o3{width:300px;height:220px;left:50%;top:18%;transform:translateX(-40%);background:radial-gradient(circle at 40% 30%, rgba(255,175,60,0.2), rgba(255,110,20,0.06) 50%, transparent 75%);animation:drift3 16s linear infinite alternate}
+
+    @keyframes drift1{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(24px,-18px,0) scale(1.02)}100%{transform:translate3d(-14px,10px,0) scale(0.98)}}
+    @keyframes drift2{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-18px,20px,0) scale(1.01)}100%{transform:translate3d(12px,-12px,0) scale(0.99)}}
+    @keyframes drift3{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(8px,14px,0) scale(1.01)}100%{transform:translate3d(-6px,-8px,0) scale(0.995)}}
+
+    /* Keep hero content above glows */
+    .hero, .topbar, .hero-content{position:relative;z-index:2}
+
+    /* Gentle halo on the main heading and CTA for cohesion */
+    .hero-content h1{text-shadow:0 10px 40px rgba(255,140,36,0.06)}
+    .hero-content .btn.btn-primary{box-shadow:0 10px 36px rgba(255,140,36,0.10);transition:box-shadow 260ms ease}
+    .hero-content .btn.btn-primary:focus,.hero-content .btn.btn-primary:hover{box-shadow:0 18px 60px rgba(255,140,36,0.14)}
+
+    /* Mobile friendliness: reduce brightness/motion */
+    @media (max-width:680px){
+      .glow-orb.o1{opacity:0.55;filter:blur(56px);width:520px;height:380px;left:-26%;top:-12%}
+      .glow-orb.o2{opacity:0.45;filter:blur(48px);width:420px;height:340px;right:-18%;bottom:-12%}
+      .glow-orb.o3{opacity:0.5;filter:blur(44px);width:220px;height:160px}
+      .glow-orb{animation-duration:20s}
+    }
+
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce){ .glow-orb{animation:none;transition:none;}} 
+  </style>
 </head>
 <body class="page page-home">
   <header class="topbar">
@@ -20,6 +58,12 @@
       <a href="auth.html" class="cta">Get Started</a>
     </nav>
   </header>
+  <!-- Soft animated glow orbs (visual only) -->
+  <div class="glow-bg" aria-hidden="true">
+    <div class="glow-orb o1"></div>
+    <div class="glow-orb o2"></div>
+    <div class="glow-orb o3"></div>
+  </div>
 
   <main class="hero">
     <div class="hero-content">
