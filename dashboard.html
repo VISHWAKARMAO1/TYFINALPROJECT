@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard — Dr PDF Pro</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-1:#0b0f14;
+      --bg-2:#111827;
+      --accent-start:#ff6b6b;
+      --accent-end:#845ef7;
+      --glass: rgba(255,255,255,0.04);
+      --muted: rgba(255,255,255,0.6);
+      --card-radius:16px;
+      --glass-blur:14px;
+      --transition:320ms cubic-bezier(.2,.9,.2,1);
+      --header-space:96px; /* approximate header + top spacing */
+      --footer-space:72px; /* approximate footer height/padding */
+    }
+    html,body{height:100%}
+    body{
+      margin:0;font-family:'Inter','Poppins',system-ui,-apple-system,'Segoe UI',Roboto,Arial;color:#eaf0ff;
+      /* seamless background: keep same dark-blue tone and transition to black at bottom */
+      background: radial-gradient(circle at 10% 10%, rgba(132,94,247,0.06) 0%, transparent 20%), linear-gradient(180deg, var(--bg-1) 0%, #000 100%);
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      background-size: cover;
+      -webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100vh;overflow-x:hidden;padding:20px;
+    }
+  .bg-particles{position:fixed;inset:0;pointer-events:none;opacity:0.35;z-index:0}
+    .bg-particles span{position:absolute;border-radius:999px;background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.06), rgba(255,255,255,0.01));filter:blur(28px);animation:float 16s linear infinite}
+    .bg-particles .p1{width:300px;height:300px;left:-80px;top:-60px}
+    .bg-particles .p2{width:200px;height:200px;right:-60px;bottom:20px}
+    .bg-particles .p3{width:120px;height:120px;left:18%;bottom:-30px}
+    @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-24px)}100%{transform:translateY(0)}}
+
+    /* Topbar */
+    .topbar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand .logo{width:44px;height:44;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;color:white;background:linear-gradient(135deg,var(--accent-start),var(--accent-end));box-shadow:0 6px 20px rgba(132,94,247,0.12)}
+    .brand .title{font-weight:700;font-size:18px;background:linear-gradient(90deg,var(--accent-start),var(--accent-end));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .top-actions{display:flex;align-items:center;gap:12px}
+    #welcomeText{color:var(--muted);font-weight:600}
+    #logoutBtn{background:transparent;border:0;color:white;padding:8px 12px;border-radius:10px;cursor:pointer;transition:transform var(--transition),box-shadow var(--transition);background:linear-gradient(90deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02));}
+    #logoutBtn:hover{transform:scale(1.03);box-shadow:0 8px 30px rgba(132,94,247,0.14)}
+
+  /* subtle radial overlay for depth */
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 8% 8%, rgba(255,255,255,0.02), transparent 14%);}    
+  main.dashboard-main{position:relative;z-index:2;flex:1;display:block;max-width:1200px;margin:0 auto;width:100%;}
+
+    /* Welcome panel */
+  .welcome-panel{margin:6px 0 18px 0;padding:22px;border-radius:var(--card-radius);background:var(--glass);backdrop-filter:blur(var(--glass-blur));-webkit-backdrop-filter:blur(var(--glass-blur));border:1px solid rgba(255,255,255,0.04);box-shadow:0 10px 40px rgba(2,6,23,0.65);}
+  .welcome-panel h1{margin:0;font-size:1.35rem;font-weight:700}
+    .welcome-sub{color:var(--muted);margin-top:6px}
+    .welcome-animate{display:inline-block;opacity:0;transform:translateY(10px);animation:fadeUp 700ms forwards}
+    @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+
+    /* Tools grid */
+  .tools h2{margin:0 0 12px 0;font-size:1.15rem;font-weight:600}
+  .tool-grid{display:grid;gap:20px;grid-template-columns:repeat(3,1fr)}
+  .tool-card{background:var(--glass);border-radius:16px;padding:22px;min-height:140px;display:flex;flex-direction:column;justify-content:space-between;transition:transform var(--transition),box-shadow var(--transition),border-color var(--transition);border:1px solid rgba(255,255,255,0.02);backdrop-filter:blur(12px);position:relative;overflow:hidden}
+  /* gradient border glow using pseudo-element */
+  .tool-card::before{content:'';position:absolute;inset:-2px;border-radius:inherit;padding:2px;background:linear-gradient(90deg,var(--accent-start),var(--accent-end));-webkit-mask:linear-gradient(#fff,#fff) content-box, linear-gradient(#fff,#fff);mask:linear-gradient(#fff,#fff) content-box, linear-gradient(#fff,#fff);mask-composite:exclude;opacity:0;transition:opacity var(--transition)}
+  .tool-card .t-icon{font-size:34px;background:linear-gradient(90deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:12px;border-radius:12px;width:56px;height:56px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(2,6,23,0.6);transition:transform var(--transition),box-shadow var(--transition)}
+  .tool-card h3{margin:10px 0 6px 0;font-size:1.05rem;font-weight:700}
+  .tool-card p.muted{margin:0;color:rgba(255,255,255,0.8);font-size:0.95rem}
+  .tool-card .tool-actions{margin-top:14px}
+  .tool-card .btn{padding:10px 12px;border-radius:12px}
+
+  .tool-card:hover{transform:scale(1.03);box-shadow:0 12px 40px rgba(132,94,247,0.22);border-color:rgba(132,94,247,0.22)}
+  .tool-card:hover::before{opacity:1}
+  .tool-card:hover .t-icon{transform:translateY(-3px);box-shadow:0 14px 40px rgba(132,94,247,0.12)}
+
+  /* Entrance animation */
+  .card-enter{opacity:0;transform:translateY(16px) scale(.995);animation:cardIn 420ms cubic-bezier(.2,.9,.2,1) forwards}
+  @keyframes cardIn{to{opacity:1;transform:translateY(0) scale(1)}}
+
+    /* Responsive */
+    @media (max-width:900px){.tool-grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:450px){.tool-grid{grid-template-columns:1fr} .topbar{padding:10px}}
+
+    /* Button animated gradient */
+    .btn{background:linear-gradient(90deg,var(--accent-start),var(--accent-end));background-size:200% 200%;animation:gradShift 6s linear infinite;color:#fff}
+    @keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+    /* Footer */
+    footer.dash-footer{text-align:center;color:#b0b0b0;padding:20px 0;font-size:12px;margin-top:0}
+  </style>
+</head>
+<body class="page page-dashboard">
+  <div class="bg-particles" aria-hidden="true">
+    <span class="p1"></span>
+    <span class="p2"></span>
+    <span class="p3"></span>
+  </div>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">DP</div>
+      <div class="title">Dr PDF Pro</div>
+    </div>
+    <div class="top-actions">
+      <div id="welcomeText" class="welcome">Welcome, Guest</div>
+      <button id="logoutBtn" class="btn btn-ghost">Logout</button>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <div class="welcome-panel" role="region" aria-labelledby="welcomeHeading">
+      <h1 id="welcomeHeading"><span id="welcomeHero" class="welcome-animate">Welcome, Guest 👋</span></h1>
+      <div class="welcome-sub">Choose a tool to get started.</div>
+    </div>
+
+    <section class="tagline" aria-hidden="true">
+      <h1>Manage, Edit, and Transform Your PDFs Effortlessly.</h1>
+    </section>
+
+    <section class="tools">
+      <h2>Your Tools</h2>
+      <div id="toolGrid" class="tool-grid">
+        <!-- Tool cards generated by JS -->
+      </div>
+    </section>
+  </main>
+
+  <script src="js/app.js"></script>
+  <script>
+    // Small UI script that runs after app.js populates the DOM.
+    (function(){
+      // Wait until the DOM is ready and app.js has run
+      function whenReady(fn){ if(document.readyState==='complete' || document.readyState==='interactive'){ setTimeout(fn,30);} else document.addEventListener('DOMContentLoaded', fn);} 
+
+      whenReady(()=>{
+        // Animate welcome text: mirror the header welcomeText if set by app.js
+        const headerWelcome = document.getElementById('welcomeText');
+        const hero = document.getElementById('welcomeHero');
+        if(headerWelcome && hero){
+          // copy content and animate letters
+          const txt = headerWelcome.textContent || headerWelcome.innerText || 'Welcome';
+          const display = txt + ' 👋';
+          hero.textContent = '';
+          // wrap chars in spans for stagger
+          Array.from(display).forEach((ch,i)=>{
+            const s = document.createElement('span'); s.textContent = ch; s.style.display='inline-block'; s.style.opacity='0'; s.style.transform='translateY(8px)'; s.style.transition='opacity 360ms ease '+(i*30)+'ms, transform 360ms cubic-bezier(.2,.9,.2,1) '+(i*30)+'ms';
+            hero.appendChild(s);
+            requestAnimationFrame(()=>{ s.style.opacity='1'; s.style.transform='translateY(0)'; });
+          });
+        }
+
+        // Animate tool cards entrance with stagger once toolGrid is populated
+        const grid = document.getElementById('toolGrid');
+        function animateCards(){
+          if(!grid) return;
+          const cards = Array.from(grid.children);
+          cards.forEach((c, idx)=>{ c.classList.add('card-enter'); c.style.animationDelay = (idx * 100) + 'ms'; });
+        }
+
+        // If cards already present, animate; otherwise observe
+        if(grid && grid.children.length>0){ animateCards(); }
+        else if(grid){
+          const mo = new MutationObserver((mut)=>{
+            if(grid.children.length>0){ animateCards(); mo.disconnect(); }
+          });
+          mo.observe(grid, { childList:true });
+        }
+
+        // Small UX: keyboard access - focus first tool button on page load
+        setTimeout(()=>{
+          const firstBtn = document.querySelector('#toolGrid .btn[data-tool]');
+          if(firstBtn) firstBtn.setAttribute('tabindex','0');
+        }, 600);
+      });
+    })();
+  </script>
+
+  <script>
+    // Strict authentication guard and logout for dashboard
+    (function(){
+      function init(){
+        var isAuth = false;
+        try{ isAuth = localStorage.getItem('isAuthenticated') === 'true'; }catch(e){}
+        if(!isAuth){ window.location.href = 'auth.html'; return; }
+
+        // Populate welcome text from stored user info
+        try{
+          var welcome = document.getElementById('welcomeText');
+          var cur = null;
+          try{ cur = JSON.parse(localStorage.getItem('drpdf_currentUser') || 'null'); }catch(e){}
+          var loggedEmail = localStorage.getItem('loggedInUser');
+          var display = 'Welcome';
+          if(cur && (cur.fullname || cur.fullName || cur.email)) display = cur.fullname || cur.fullName || cur.email;
+          else if(loggedEmail) {
+            var users = JSON.parse(localStorage.getItem('users')||'[]');
+            var u = users.find(function(x){ return x.email === loggedEmail; });
+            display = u ? (u.fullname || u.email) : loggedEmail;
+          }
+          if(welcome) welcome.textContent = display;
+        }catch(e){}
+
+        // Logout handler
+        var logoutBtn = document.getElementById('logoutBtn');
+        if(logoutBtn){
+          logoutBtn.addEventListener('click', function(){
+            try{
+              localStorage.removeItem('isAuthenticated');
+              localStorage.removeItem('loggedInUser');
+              localStorage.removeItem('drpdf_currentUser');
+            }catch(e){}
+            window.location.href = 'auth.html';
+          });
+        }
+      }
+
+      if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+      else init();
+    })();
+  </script>
+
+  <footer class="dash-footer">© Dr PDF Pro | Developed by Ankit Vishwakarma | Roll No 136</footer>
+</body>
+</html>
