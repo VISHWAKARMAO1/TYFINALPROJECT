@@ -6,26 +6,199 @@
   <title>Dr PDF Pro — Simplify PDFs</title>
   <link rel="stylesheet" href="css/styles.css">
   <style>
-    /* Enhanced soft glowing background for hero (deep charcoal + warm orange tones)
-       - Multiple blurred radial orbs drift slowly (10-16s) for a subtle cinematic feel
-       - Reduced motion & brightness on small screens for readability/perf
-    */
-    .glow-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-    .glow-orb{position:absolute;border-radius:50%;filter:blur(72px);opacity:0.9;mix-blend-mode:screen;will-change:transform,opacity}
+    /* PDF-themed hero background SVG illustration */
+    .hero-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .hero-svg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.15;
+    }
 
-    /* Large warm orb behind the left of hero */
-    .glow-orb.o1{width:720px;height:520px;left:-18%;top:-8%;background:radial-gradient(circle at 30% 30%, rgba(255,160,72,0.18), rgba(255,124,0,0.06) 40%, transparent 68%);animation:drift1 14s linear infinite alternate}
-    /* Subtle amber fill to the right or bottom */
-    .glow-orb.o2{width:520px;height:420px;right:-12%;bottom:-6%;background:radial-gradient(circle at 25% 30%, rgba(255,200,120,0.12), rgba(255,140,40,0.04) 45%, transparent 70%);animation:drift2 12s linear infinite alternate}
-    /* Small focused warm rim near hero CTA */
-    .glow-orb.o3{width:300px;height:220px;left:50%;top:18%;transform:translateX(-40%);background:radial-gradient(circle at 40% 30%, rgba(255,175,60,0.2), rgba(255,110,20,0.06) 50%, transparent 75%);animation:drift3 16s linear infinite alternate}
+    /* Centered hero content */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
 
-    @keyframes drift1{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(24px,-18px,0) scale(1.02)}100%{transform:translate3d(-14px,10px,0) scale(0.98)}}
-    @keyframes drift2{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-18px,20px,0) scale(1.01)}100%{transform:translate3d(12px,-12px,0) scale(0.99)}}
-    @keyframes drift3{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(8px,14px,0) scale(1.01)}100%{transform:translate3d(-6px,-8px,0) scale(0.995)}}
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
 
-    /* Keep hero content above glows */
-    .hero, .topbar, .hero-content{position:relative;z-index:2}
+    .hero-content h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #f97316, #4f46e5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-content .lead {
+      font-size: 1.25rem;
+      color: #6b7280;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    /* Hero stats */
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #f97316;
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: #6b7280;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Hero benefits */
+    .hero-benefits {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+
+    .benefit {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #374151;
+      backdrop-filter: blur(10px);
+    }
+
+    .benefit-icon {
+      font-size: 1.25rem;
+    }
+
+    /* Hero description */
+    .hero-description {
+      font-size: 1rem;
+      color: #4b5563;
+      line-height: 1.7;
+      margin: 2rem 0;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Hero CTAs */
+    .hero-ctas {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #f97316, #ea580c);
+      color: white;
+      box-shadow: 0 4px 14px rgba(249, 115, 22, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(249, 115, 22, 0.4);
+    }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.9);
+      color: #374151;
+      border: 2px solid #e5e7eb;
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-ghost:hover {
+      background: white;
+      border-color: #f97316;
+      color: #f97316;
+    }
+
+    /* Keep hero content above background */
+    .hero, .topbar, .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .hero-content h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero-stats {
+        gap: 2rem;
+      }
+
+      .hero-benefits {
+        gap: 1rem;
+      }
+
+      .benefit {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+      }
+
+      .hero-ctas {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .btn {
+        width: 200px;
+      }
+    }
 
     /* Gentle halo on the main heading and CTA for cohesion */
     .hero-content h1{text-shadow:0 10px 40px rgba(255,140,36,0.06)}
@@ -58,33 +231,171 @@
       <a href="auth.html" class="cta">Get Started</a>
     </nav>
   </header>
-  <!-- Soft animated glow orbs (visual only) -->
-  <div class="glow-bg" aria-hidden="true">
-    <div class="glow-orb o1"></div>
-    <div class="glow-orb o2"></div>
-    <div class="glow-orb o3"></div>
+  <!-- PDF-themed hero background illustration -->
+  <div class="hero-bg" aria-hidden="true">
+    <svg viewBox="0 0 1200 800" class="hero-svg">
+      <defs>
+        <linearGradient id="pdfGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#f97316;stop-opacity:0.1" />
+          <stop offset="50%" style="stop-color:#4f46e5;stop-opacity:0.05" />
+          <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:0.1" />
+        </linearGradient>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#000" flood-opacity="0.1"/>
+        </filter>
+      </defs>
+
+      <!-- Background gradient -->
+      <rect width="1200" height="800" fill="url(#pdfGradient)"/>
+
+      <!-- PDF Document 1 -->
+      <g transform="translate(150, 200)" filter="url(#shadow)">
+        <rect x="0" y="0" width="180" height="240" rx="8" fill="#dc2626" stroke="#b91c1c" stroke-width="2"/>
+        <rect x="20" y="30" width="140" height="8" rx="4" fill="#ffffff"/>
+        <rect x="20" y="50" width="100" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
+        <rect x="20" y="70" width="120" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
+        <rect x="20" y="90" width="80" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
+        <text x="90" y="160" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="14" font-weight="bold">PDF</text>
+        <circle cx="90" cy="185" r="15" fill="#ffffff" opacity="0.8"/>
+        <text x="90" y="190" text-anchor="middle" fill="#dc2626" font-family="Arial, sans-serif" font-size="10" font-weight="bold">1</text>
+      </g>
+
+      <!-- PDF Document 2 -->
+      <g transform="translate(400, 180)" filter="url(#shadow)">
+        <rect x="0" y="0" width="180" height="240" rx="8" fill="#2563eb" stroke="#1d4ed8" stroke-width="2"/>
+        <rect x="20" y="30" width="140" height="8" rx="4" fill="#ffffff"/>
+        <rect x="20" y="50" width="110" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
+        <rect x="20" y="70" width="130" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
+        <rect x="20" y="90" width="90" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
+        <text x="90" y="160" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="14" font-weight="bold">PDF</text>
+        <circle cx="90" cy="185" r="15" fill="#ffffff" opacity="0.8"/>
+        <text x="90" y="190" text-anchor="middle" fill="#2563eb" font-family="Arial, sans-serif" font-size="10" font-weight="bold">2</text>
+      </g>
+
+      <!-- PDF Document 3 -->
+      <g transform="translate(650, 220)" filter="url(#shadow)">
+        <rect x="0" y="0" width="180" height="240" rx="8" fill="#16a34a" stroke="#15803d" stroke-width="2"/>
+        <rect x="20" y="30" width="140" height="8" rx="4" fill="#ffffff"/>
+        <rect x="20" y="50" width="120" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
+        <rect x="20" y="70" width="100" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
+        <rect x="20" y="90" width="110" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
+        <text x="90" y="160" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="14" font-weight="bold">PDF</text>
+        <circle cx="90" cy="185" r="15" fill="#ffffff" opacity="0.8"/>
+        <text x="90" y="190" text-anchor="middle" fill="#16a34a" font-family="Arial, sans-serif" font-size="10" font-weight="bold">3</text>
+      </g>
+
+      <!-- Combined PDF Result -->
+      <g transform="translate(900, 200)" filter="url(#shadow)">
+        <rect x="0" y="0" width="200" height="260" rx="8" fill="#7c3aed" stroke="#6d28d9" stroke-width="2"/>
+        <rect x="20" y="30" width="160" height="8" rx="4" fill="#ffffff"/>
+        <rect x="20" y="50" width="130" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
+        <rect x="20" y="70" width="150" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
+        <rect x="20" y="90" width="100" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
+        <rect x="20" y="110" width="140" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
+        <text x="100" y="180" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="16" font-weight="bold">MERGED</text>
+        <text x="100" y="200" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="14" font-weight="bold">PDF</text>
+      </g>
+
+      <!-- Processing arrows -->
+      <g transform="translate(330, 320)">
+        <path d="M0,0 L40,0 L35,5 M40,0 L35,-5" stroke="#6b7280" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+        <text x="20" y="-10" text-anchor="middle" fill="#6b7280" font-family="Arial, sans-serif" font-size="12">MERGE</text>
+      </g>
+
+      <g transform="translate(580, 340)">
+        <path d="M0,0 L40,0 L35,5 M40,0 L35,-5" stroke="#6b7280" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+        <text x="20" y="-10" text-anchor="middle" fill="#6b7280" font-family="Arial, sans-serif" font-size="12">PROCESS</text>
+      </g>
+
+      <!-- Tool icons floating around -->
+      <g transform="translate(200, 500)" opacity="0.6">
+        <circle cx="0" cy="0" r="25" fill="#f97316" stroke="#ea580c" stroke-width="2"/>
+        <text x="0" y="5" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold">✂</text>
+        <text x="0" y="35" text-anchor="middle" fill="#6b7280" font-family="Arial, sans-serif" font-size="10">SPLIT</text>
+      </g>
+
+      <g transform="translate(350, 520)" opacity="0.6">
+        <circle cx="0" cy="0" r="25" fill="#06b6d4" stroke="#0891b2" stroke-width="2"/>
+        <text x="0" y="5" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold">🗜</text>
+        <text x="0" y="35" text-anchor="middle" fill="#6b7280" font-family="Arial, sans-serif" font-size="10">COMPRESS</text>
+      </g>
+
+      <g transform="translate(500, 480)" opacity="0.6">
+        <circle cx="0" cy="0" r="25" fill="#10b981" stroke="#059669" stroke-width="2"/>
+        <text x="0" y="5" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold">🔒</text>
+        <text x="0" y="35" text-anchor="middle" fill="#6b7280" font-family="Arial, sans-serif" font-size="10">ENCRYPT</text>
+      </g>
+
+      <g transform="translate(650, 530)" opacity="0.6">
+        <circle cx="0" cy="0" r="25" fill="#8b5cf6" stroke="#7c3aed" stroke-width="2"/>
+        <text x="0" y="5" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold">✏</text>
+        <text x="0" y="35" text-anchor="middle" fill="#6b7280" font-family="Arial, sans-serif" font-size="10">EDIT</text>
+      </g>
+
+      <g transform="translate(800, 490)" opacity="0.6">
+        <circle cx="0" cy="0" r="25" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
+        <text x="0" y="5" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold">👁</text>
+        <text x="0" y="35" text-anchor="middle" fill="#6b7280" font-family="Arial, sans-serif" font-size="10">OCR</text>
+      </g>
+
+      <!-- Arrow marker definition -->
+      <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#6b7280"/>
+        </marker>
+      </defs>
+    </svg>
   </div>
 
   <main class="hero">
     <div class="hero-content">
       <h1>Simplify Your PDF Tasks in Minutes.</h1>
       <p class="lead">Merge, Split, Compress, Encrypt, Edit and Manage PDFs — all in one place.</p>
-      <div class="hero-ctas">
-        <a class="btn btn-primary" href="auth.html">Get Started</a>
-        <button id="tryDemo" class="btn btn-ghost">Try Demo</button>
+
+      <!-- Additional Information -->
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-number">10M+</div>
+          <div class="stat-label">PDFs Processed</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">50K+</div>
+          <div class="stat-label">Happy Users</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">99.9%</div>
+          <div class="stat-label">Uptime</div>
+        </div>
       </div>
-    </div>
-    <div class="hero-visual" aria-hidden="true">
-      <!-- minimal animated gradient / glowing shapes -->
-      <svg viewBox="0 0 600 400" class="glow">
-        <defs>
-          <linearGradient id="g1" x1="0" x2="1">
-            <stop offset="0%" stop-color="#f97316" />
-            <stop offset="100%" stop-color="#4f46e5" />
-          </linearGradient>
-        </defs>
-        <rect x="0" y="0" width="600" height="400" fill="url(#g1)" opacity="0.06" />
-      </svg>
+
+      <div class="hero-benefits">
+        <div class="benefit">
+          <span class="benefit-icon">⚡</span>
+          <span>Lightning Fast Processing</span>
+        </div>
+        <div class="benefit">
+          <span class="benefit-icon">🔒</span>
+          <span>100% Secure & Private</span>
+        </div>
+        <div class="benefit">
+          <span class="benefit-icon">📱</span>
+          <span>Works on Any Device</span>
+        </div>
+        <div class="benefit">
+          <span class="benefit-icon">💰</span>
+          <span>Free Basic Features</span>
+        </div>
+      </div>
+
+      <p class="hero-description">
+        Dr PDF Pro is your complete PDF solution. Whether you need to merge multiple documents,
+        split large files, compress for sharing, or extract text from images — we've got you covered.
+        Join thousands of users who trust Dr PDF Pro for their document needs.
+      </p>
+
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="auth.html">Get Started Free</a>
+      </div>
     </div>
   </main>
 
@@ -111,7 +422,31 @@
         <h3>Encrypt/Decrypt</h3>
         <p>Secure PDFs with passwords or remove them.</p>
       </div>
-    </div>
+      <div class="feature">
+        <div class="ic">✏️</div>
+        <h3>Edit PDFs</h3>
+        <p>Edit text, images, and content in your PDFs.</p>
+      </div>
+      <div class="feature">
+        <div class="ic">💧</div>
+        <h3>Add Watermark</h3>
+        <p>Add text or image watermarks to your PDFs.</p>
+      </div>
+      <div class="feature">
+        <div class="ic">🖼️</div>
+        <h3>Extract Images</h3>
+        <p>Extract images from PDF documents.</p>
+      </div>
+      <div class="feature">
+        <div class="ic">🔗</div>
+        <h3>Extract Links</h3>
+        <p>Extract all hyperlinks from PDF files.</p>
+      </div>
+      <div class="feature">
+        <div class="ic">👁️</div>
+        <h3>OCR</h3>
+        <p>Convert scanned PDFs to searchable text.</p>
+      </div>
   </section>
 
   <footer class="footer">
@@ -119,27 +454,5 @@
   </footer>
 
   <script src="js/app.js"></script>
-  <script>
-    document.getElementById('tryDemo').addEventListener('click', () => {
-      // create a demo preview (visual-only). Do NOT set 'isAuthenticated'.
-      const demo = { fullName: 'Demo User', email: 'demo@drpdf.local', username: 'demo' };
-      try{
-        const users = JSON.parse(localStorage.getItem('drpdf_users') || '[]');
-        if (!users.find(u => u.username === 'demo')) {
-          users.push(demo);
-          localStorage.setItem('drpdf_users', JSON.stringify(users));
-        }
-        // set current user for display purposes only
-        localStorage.setItem('drpdf_currentUser', JSON.stringify(demo));
-        // mark demo preview; do NOT set isAuthenticated
-        localStorage.setItem('isDemo', 'true');
-        // ensure any previous authenticated session is not confused
-        localStorage.removeItem('isAuthenticated');
-        localStorage.removeItem('isLoggedIn');
-      }catch(e){/* ignore */}
-      // open dashboard in preview mode
-      window.location.href = 'dashboard.html';
-    });
-  </script>
 </body>
 </html>
