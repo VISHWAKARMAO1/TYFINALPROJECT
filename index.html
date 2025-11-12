@@ -6,19 +6,51 @@
   <title>Dr PDF Pro — Simplify PDFs</title>
   <link rel="stylesheet" href="css/styles.css">
   <style>
-    /* PDF-themed hero background SVG illustration */
-    .hero-bg {
+    /* Simple attractive image rotator */
+    .image-rotator {
       position: fixed;
-      inset: 0;
-      pointer-events: none;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
       z-index: 0;
       overflow: hidden;
     }
-    .hero-svg {
+
+    .rotator-slide {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      opacity: 0.15;
+      opacity: 0;
+      transition: opacity 2s ease-in-out;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .rotator-slide.active {
+      opacity: 0.1;
+    }
+
+    /* Different attractive PDF-themed backgrounds */
+    .slide-1 {
+      background: linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(79, 70, 229, 0.05) 100%),
+                  radial-gradient(circle at 20% 80%, rgba(249, 115, 22, 0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 20%, rgba(79, 70, 229, 0.08) 0%, transparent 50%);
+    }
+
+    .slide-2 {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(249, 115, 22, 0.06) 100%),
+                  radial-gradient(circle at 30% 70%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 30%, rgba(249, 115, 22, 0.08) 0%, transparent 50%);
+    }
+
+    .slide-3 {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.07) 0%, rgba(6, 182, 212, 0.05) 100%),
+                  radial-gradient(circle at 40% 60%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 60% 40%, rgba(6, 182, 212, 0.08) 0%, transparent 50%);
     }
 
     /* Centered hero content */
@@ -29,6 +61,8 @@
       justify-content: center;
       text-align: center;
       padding: 2rem;
+      position: relative;
+      z-index: 2;
     }
 
     .hero-content {
@@ -168,7 +202,7 @@
     /* Keep hero content above background */
     .hero, .topbar, .hero-content {
       position: relative;
-      z-index: 2;
+      z-index: 10;
     }
 
     /* Mobile responsiveness */
@@ -346,7 +380,267 @@
     }
 
     /* Respect reduced motion */
-    @media (prefers-reduced-motion: reduce){ .glow-orb{animation:none;transition:none;}} 
+    @media (prefers-reduced-motion: reduce){ .glow-orb{animation:none;transition:none;}}
+
+    /* Particle effects for extra dynamism */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #f97316, #4f46e5);
+      animation: visible-particle-dance 10s ease-in-out infinite;
+      opacity: 0.9 !important;
+    }
+
+    .particle:nth-child(1) {
+      width: 8px;
+      height: 8px;
+      top: 20%;
+      left: 15%;
+      animation-delay: 0s;
+    }
+
+    .particle:nth-child(2) {
+      width: 6px;
+      height: 6px;
+      top: 40%;
+      right: 20%;
+      animation-delay: 1s;
+    }
+
+    .particle:nth-child(3) {
+      width: 7px;
+      height: 7px;
+      bottom: 35%;
+      left: 25%;
+      animation-delay: 2s;
+    }
+
+    .particle:nth-child(4) {
+      width: 5px;
+      height: 5px;
+      top: 60%;
+      right: 15%;
+      animation-delay: 3s;
+    }
+
+    .particle:nth-child(5) {
+      width: 6px;
+      height: 6px;
+      bottom: 25%;
+      right: 25%;
+      animation-delay: 4s;
+    }
+
+    @keyframes visible-particle-dance {
+      0%, 100% {
+        transform: translateY(0px) translateX(0px) scale(1);
+        opacity: 0.9;
+      }
+      25% {
+        transform: translateY(-15px) translateX(8px) scale(1.2);
+        opacity: 0.9;
+      }
+      50% {
+        transform: translateY(-30px) translateX(16px) scale(0.9);
+        opacity: 0.9;
+      }
+      75% {
+        transform: translateY(-15px) translateX(24px) scale(1.1);
+        opacity: 0.9;
+      }
+    }
+
+    /* Enhanced animations for SVG elements - more subtle */
+    .hero-bg g:hover {
+      animation-duration: 35s; /* Slower on hover */
+    }
+
+    /* Contained pulsing effects - attractive but contained */
+    .hero-bg g:nth-child(2) rect:first-child,
+    .hero-bg g:nth-child(3) rect:first-child,
+    .hero-bg g:nth-child(4) rect:first-child {
+      animation: contained-glow 8s ease-in-out infinite;
+    }
+
+    .hero-bg g:nth-child(2) rect:first-child { animation-delay: 0s; }
+    .hero-bg g:nth-child(3) rect:first-child { animation-delay: 2s; }
+    .hero-bg g:nth-child(4) rect:first-child { animation-delay: 4s; }
+
+    @keyframes contained-glow {
+      0%, 100% {
+        transform: scale(1);
+        filter: brightness(1) saturate(1);
+      }
+      50% {
+        transform: scale(1.01);
+        filter: brightness(1.05) saturate(1.1);
+      }
+    }
+
+    /* Contained color transitions for arrows */
+    .hero-bg path {
+      animation: contained-arrow-shine 10s ease-in-out infinite;
+    }
+
+    @keyframes contained-arrow-shine {
+      0%, 100% {
+        stroke: #6b7280;
+        stroke-width: 3;
+      }
+      50% {
+        stroke: #f97316;
+        stroke-width: 3.5;
+      }
+    }
+
+    /* Smooth scrolling and parallax */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Parallax effect removed - elements stay in place */
+    .hero-bg {
+      transform: none;
+    }
+
+    .floating-elements {
+      transform: none;
+    }
+
+    .particles {
+      transform: none;
+    }
+
+    /* Additional contained decorative elements */
+    .decorative-elements {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .decorative-circle {
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid rgba(249, 115, 22, 0.2);
+      animation: visible-pulse 14s ease-in-out infinite;
+    }
+
+    .decorative-circle:nth-child(1) {
+      width: 60px;
+      height: 60px;
+      top: 30%;
+      left: 8%;
+      animation-delay: 0s;
+    }
+
+    .decorative-circle:nth-child(2) {
+      width: 40px;
+      height: 40px;
+      top: 70%;
+      right: 8%;
+      animation-delay: 3s;
+    }
+
+    .decorative-circle:nth-child(3) {
+      width: 50px;
+      height: 50px;
+      bottom: 20%;
+      left: 30%;
+      animation-delay: 6s;
+    }
+
+    @keyframes visible-pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.1;
+      }
+      50% {
+        transform: scale(1.1);
+        opacity: 0.15;
+      }
+    }
+
+    @keyframes contained-bounce {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+        opacity: 0.2;
+      }
+      25% {
+        transform: translateY(-10px) rotate(1deg);
+        opacity: 0.2;
+      }
+      50% {
+        transform: translateY(-20px) rotate(0deg);
+        opacity: 0.2;
+      }
+      75% {
+        transform: translateY(-10px) rotate(-1deg);
+        opacity: 0.2;
+      }
+    }
+
+    /* Simple attractive image rotator */
+    .image-rotator {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .rotator-slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 2s ease-in-out;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .rotator-slide.active {
+      opacity: 0.1;
+    }
+
+    /* Different attractive PDF-themed backgrounds */
+    .slide-1 {
+      background: linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(79, 70, 229, 0.05) 100%),
+                  radial-gradient(circle at 20% 80%, rgba(249, 115, 22, 0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 20%, rgba(79, 70, 229, 0.08) 0%, transparent 50%);
+    }
+
+    .slide-2 {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(249, 115, 22, 0.06) 100%),
+                  radial-gradient(circle at 30% 70%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 30%, rgba(249, 115, 22, 0.08) 0%, transparent 50%);
+    }
+
+    .slide-3 {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.07) 0%, rgba(6, 182, 212, 0.05) 100%),
+                  radial-gradient(circle at 40% 60%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 60% 40%, rgba(6, 182, 212, 0.08) 0%, transparent 50%);
+    }
   </style>
 </head>
 <body class="page page-home">
@@ -363,120 +657,11 @@
       <a href="auth.html" class="cta">Get Started</a>
     </nav>
   </header>
-  <!-- PDF-themed hero background illustration -->
-  <div class="hero-bg" aria-hidden="true">
-    <svg viewBox="0 0 1200 800" class="hero-svg">
-      <defs>
-        <linearGradient id="pdfGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:#f97316;stop-opacity:0.1" />
-          <stop offset="50%" style="stop-color:#4f46e5;stop-opacity:0.05" />
-          <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:0.1" />
-        </linearGradient>
-        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#000" flood-opacity="0.1"/>
-        </filter>
-      </defs>
-
-      <!-- Background gradient -->
-      <rect width="1200" height="800" fill="url(#pdfGradient)"/>
-
-      <!-- PDF Document 1 -->
-      <g transform="translate(150, 200)" filter="url(#shadow)">
-        <rect x="0" y="0" width="180" height="240" rx="8" fill="#dc2626" stroke="#b91c1c" stroke-width="2"/>
-        <rect x="20" y="30" width="140" height="8" rx="4" fill="#ffffff"/>
-        <rect x="20" y="50" width="100" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
-        <rect x="20" y="70" width="120" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
-        <rect x="20" y="90" width="80" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
-        <text x="90" y="160" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="14" font-weight="bold">PDF</text>
-        <circle cx="90" cy="185" r="15" fill="#ffffff" opacity="0.8"/>
-        <text x="90" y="190" text-anchor="middle" fill="#dc2626" font-family="Arial, sans-serif" font-size="10" font-weight="bold">1</text>
-      </g>
-
-      <!-- PDF Document 2 -->
-      <g transform="translate(400, 180)" filter="url(#shadow)">
-        <rect x="0" y="0" width="180" height="240" rx="8" fill="#2563eb" stroke="#1d4ed8" stroke-width="2"/>
-        <rect x="20" y="30" width="140" height="8" rx="4" fill="#ffffff"/>
-        <rect x="20" y="50" width="110" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
-        <rect x="20" y="70" width="130" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
-        <rect x="20" y="90" width="90" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
-        <text x="90" y="160" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="14" font-weight="bold">PDF</text>
-        <circle cx="90" cy="185" r="15" fill="#ffffff" opacity="0.8"/>
-        <text x="90" y="190" text-anchor="middle" fill="#2563eb" font-family="Arial, sans-serif" font-size="10" font-weight="bold">2</text>
-      </g>
-
-      <!-- PDF Document 3 -->
-      <g transform="translate(650, 220)" filter="url(#shadow)">
-        <rect x="0" y="0" width="180" height="240" rx="8" fill="#16a34a" stroke="#15803d" stroke-width="2"/>
-        <rect x="20" y="30" width="140" height="8" rx="4" fill="#ffffff"/>
-        <rect x="20" y="50" width="120" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
-        <rect x="20" y="70" width="100" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
-        <rect x="20" y="90" width="110" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
-        <text x="90" y="160" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="14" font-weight="bold">PDF</text>
-        <circle cx="90" cy="185" r="15" fill="#ffffff" opacity="0.8"/>
-        <text x="90" y="190" text-anchor="middle" fill="#16a34a" font-family="Arial, sans-serif" font-size="10" font-weight="bold">3</text>
-      </g>
-
-      <!-- Combined PDF Result -->
-      <g transform="translate(900, 200)" filter="url(#shadow)">
-        <rect x="0" y="0" width="200" height="260" rx="8" fill="#7c3aed" stroke="#6d28d9" stroke-width="2"/>
-        <rect x="20" y="30" width="160" height="8" rx="4" fill="#ffffff"/>
-        <rect x="20" y="50" width="130" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
-        <rect x="20" y="70" width="150" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
-        <rect x="20" y="90" width="100" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
-        <rect x="20" y="110" width="140" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
-        <text x="100" y="180" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="16" font-weight="bold">MERGED</text>
-        <text x="100" y="200" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="14" font-weight="bold">PDF</text>
-      </g>
-
-      <!-- Processing arrows -->
-      <g transform="translate(330, 320)">
-        <path d="M0,0 L40,0 L35,5 M40,0 L35,-5" stroke="#6b7280" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
-        <text x="20" y="-10" text-anchor="middle" fill="#6b7280" font-family="Arial, sans-serif" font-size="12">MERGE</text>
-      </g>
-
-      <g transform="translate(580, 340)">
-        <path d="M0,0 L40,0 L35,5 M40,0 L35,-5" stroke="#6b7280" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
-        <text x="20" y="-10" text-anchor="middle" fill="#6b7280" font-family="Arial, sans-serif" font-size="12">PROCESS</text>
-      </g>
-
-      <!-- Tool icons floating around -->
-      <g transform="translate(200, 500)" opacity="0.6">
-        <circle cx="0" cy="0" r="25" fill="#f97316" stroke="#ea580c" stroke-width="2"/>
-        <text x="0" y="5" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold">✂</text>
-        <text x="0" y="35" text-anchor="middle" fill="#6b7280" font-family="Arial, sans-serif" font-size="10">SPLIT</text>
-      </g>
-
-      <g transform="translate(350, 520)" opacity="0.6">
-        <circle cx="0" cy="0" r="25" fill="#06b6d4" stroke="#0891b2" stroke-width="2"/>
-        <text x="0" y="5" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold">🗜</text>
-        <text x="0" y="35" text-anchor="middle" fill="#6b7280" font-family="Arial, sans-serif" font-size="10">COMPRESS</text>
-      </g>
-
-      <g transform="translate(500, 480)" opacity="0.6">
-        <circle cx="0" cy="0" r="25" fill="#10b981" stroke="#059669" stroke-width="2"/>
-        <text x="0" y="5" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold">🔒</text>
-        <text x="0" y="35" text-anchor="middle" fill="#6b7280" font-family="Arial, sans-serif" font-size="10">ENCRYPT</text>
-      </g>
-
-      <g transform="translate(650, 530)" opacity="0.6">
-        <circle cx="0" cy="0" r="25" fill="#8b5cf6" stroke="#7c3aed" stroke-width="2"/>
-        <text x="0" y="5" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold">✏</text>
-        <text x="0" y="35" text-anchor="middle" fill="#6b7280" font-family="Arial, sans-serif" font-size="10">EDIT</text>
-      </g>
-
-      <g transform="translate(800, 490)" opacity="0.6">
-        <circle cx="0" cy="0" r="25" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
-        <text x="0" y="5" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold">👁</text>
-        <text x="0" y="35" text-anchor="middle" fill="#6b7280" font-family="Arial, sans-serif" font-size="10">OCR</text>
-      </g>
-
-      <!-- Arrow marker definition -->
-      <defs>
-        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#6b7280"/>
-        </marker>
-      </defs>
-    </svg>
+  <!-- Simple Image Rotator Background -->
+  <div class="image-rotator">
+    <div class="rotator-slide slide-1 active"></div>
+    <div class="rotator-slide slide-2"></div>
+    <div class="rotator-slide slide-3"></div>
   </div>
 
   <main class="hero">
@@ -635,5 +820,48 @@
   </footer>
 
   <script src="js/app.js"></script>
+  <script>
+    // Image rotator functionality
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.rotator-slide');
+    const totalSlides = slides.length;
+
+    function showSlide(index) {
+      slides.forEach(slide => slide.classList.remove('active'));
+      slides[index].classList.add('active');
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      showSlide(currentSlide);
+    }
+
+    // Auto-rotate every 4 seconds
+    setInterval(nextSlide, 4000);
+
+    // No scroll effects - all elements stay in their contained positions
+    // All animations are self-contained and repeat within bounds
+
+    document.getElementById('tryDemo').addEventListener('click', () => {
+      // create a demo preview (visual-only). Do NOT set 'isAuthenticated'.
+      const demo = { fullName: 'Demo User', email: 'demo@drpdf.local', username: 'demo' };
+      try{
+        const users = JSON.parse(localStorage.getItem('drpdf_users') || '[]');
+        if (!users.find(u => u.username === 'demo')) {
+          users.push(demo);
+          localStorage.setItem('drpdf_users', JSON.stringify(users));
+        }
+        // set current user for display purposes only
+        localStorage.setItem('drpdf_currentUser', JSON.stringify(demo));
+        // mark demo preview; do NOT set isAuthenticated
+        localStorage.setItem('isDemo', 'true');
+        // ensure any previous authenticated session is not confused
+        localStorage.removeItem('isAuthenticated');
+        localStorage.removeItem('isLoggedIn');
+      }catch(e){/* ignore */}
+      // open dashboard in preview mode
+      window.location.href = 'dashboard.html';
+    });
+  </script>
 </body>
 </html>

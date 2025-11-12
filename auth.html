@@ -8,12 +8,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg-1:#0b0f14;
-      --bg-2:#182033;
-      --glass: rgba(255,255,255,0.05);
-      --accent-start:#ff6b6b;
-      --accent-end:#845ef7;
-      --muted: rgba(255,255,255,0.6);
+      --bg-1:#f8fafc;
+      --bg-2:#e2e8f0;
+      --glass: rgba(255,255,255,0.95);
+      --accent-start:#f97316;
+      --accent-end:#4f46e5;
+      --muted: rgba(0,0,0,0.6);
       --glass-blur: 18px;
       --card-radius:16px;
       --transition: 280ms ease;
@@ -27,10 +27,8 @@
     body{
       margin:0;
       font-family: 'Inter', 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-      color:#eaf0ff;
-      background: radial-gradient(1200px 600px at 10% 10%, rgba(132,94,247,0.08), transparent 6%),
-                  radial-gradient(900px 500px at 90% 90%, rgba(255,107,107,0.06), transparent 6%),
-                  linear-gradient(180deg, var(--bg-1), var(--bg-2));
+      color:#1f2937;
+      background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
       min-height:100vh;
@@ -42,13 +40,38 @@
       overflow:hidden;
     }
 
-    /* Soft particle background */
-    .bg-particles{position:absolute;inset:0;pointer-events:none;opacity:0.45}
-    .bg-particles span{position:absolute;border-radius:999px;background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.06), rgba(255,255,255,0.01));filter:blur(24px);animation:float 12s linear infinite}
-    .bg-particles span.s1{width:220px;height:220px;left:-40px;top:-40px;animation-duration:18s}
-    .bg-particles span.s2{width:160px;height:160px;right:-30px;bottom:10px;animation-duration:20s}
-    .bg-particles span.s3{width:100px;height:100px;left:20%;bottom:-20px;animation-duration:16s}
-    @keyframes float{0%{transform:translateY(0) rotate(0)}50%{transform:translateY(-24px) rotate(8deg)}100%{transform:translateY(0) rotate(0)}}
+    /* Attractive PDF-themed background images */
+    .bg-images{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+    .bg-images svg{position:absolute;opacity:0.08;animation:float 20s ease-in-out infinite}
+
+    /* Large PDF document in top-left */
+    .bg-doc-1{top:10%;left:5%;width:200px;height:280px;animation-delay:0s}
+    .bg-doc-1 svg{transform:rotate(-5deg)}
+
+    /* Medium PDF document in top-right */
+    .bg-doc-2{top:15%;right:8%;width:160px;height:220px;animation-delay:2s}
+    .bg-doc-2 svg{transform:rotate(8deg)}
+
+    /* Small PDF document in bottom-left */
+    .bg-doc-3{bottom:20%;left:10%;width:120px;height:160px;animation-delay:4s}
+    .bg-doc-3 svg{transform:rotate(-3deg)}
+
+    /* PDF icon floating in center-right */
+    .bg-icon-1{top:40%;right:15%;width:80px;height:80px;animation-delay:1s}
+    .bg-icon-1 svg{transform:rotate(15deg);}
+
+    /* Document stack in bottom-right */
+    .bg-stack{bottom:15%;right:12%;width:140px;height:100px;animation-delay:3s}
+    .bg-stack svg{transform:rotate(5deg)}
+
+    /* Floating PDF icons */
+    .floating-pdf{position:absolute;opacity:0.06;animation:float-reverse 25s ease-in-out infinite}
+    .pdf-1{top:25%;left:20%;width:60px;height:60px;animation-delay:0s}
+    .pdf-2{top:60%;right:25%;width:50px;height:50px;animation-delay:5s}
+    .pdf-3{bottom:30%;left:25%;width:45px;height:45px;animation-delay:10s}
+
+    @keyframes float{0%,100%{transform:translateY(0px) rotate(0deg)}50%{transform:translateY(-20px) rotate(5deg)}}
+    @keyframes float-reverse{0%,100%{transform:translateY(0px) rotate(0deg)}50%{transform:translateY(15px) rotate(-3deg)}}
 
     /* Centered card */
     .glass-card{
@@ -57,10 +80,10 @@
       background: var(--glass);
       border-radius:var(--card-radius);
       padding:28px;
-      box-shadow: 0 8px 30px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.8);
       backdrop-filter: blur(var(--glass-blur));
       -webkit-backdrop-filter: blur(var(--glass-blur));
-      border: 1px solid rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.2);
       position:relative;
       z-index:2;
       transition: transform var(--transition), box-shadow var(--transition);
@@ -76,26 +99,26 @@
     .tabs{display:flex;gap:8px;margin-bottom:18px}
     .tab{background:transparent;border:0;color:var(--muted);padding:8px 14px;border-radius:999px;font-weight:600;cursor:pointer;position:relative;transition:all var(--transition);}
     .tab:focus{outline:none}
-    .tab.active{color:white}
-    .tab.active:after{content:'';position:absolute;left:8px;right:8px;height:3px;border-radius:999px;bottom:-6px;background:linear-gradient(90deg,var(--accent-start),var(--accent-end));box-shadow:0 6px 22px rgba(132,94,247,0.16);transition:all var(--transition);}
+    .tab.active{color:#1f2937}
+    .tab.active:after{content:'';position:absolute;left:8px;right:8px;height:3px;border-radius:999px;bottom:-6px;background:linear-gradient(90deg,var(--accent-start),var(--accent-end));box-shadow:0 6px 22px rgba(249,115,22,0.2);transition:all var(--transition);}
 
     .pane{opacity:0;transform:translateY(8px);max-height:0;overflow:hidden;transition:opacity 320ms ease, transform 320ms ease, max-height 320ms ease;padding-bottom:0}
     .pane.active{opacity:1;transform:translateY(0);max-height:2000px;padding-bottom:8px}
 
     .form{display:flex;flex-direction:column;gap:12px}
-    .field{position:relative;display:flex;align-items:center;background:rgba(0,0,0,0.25);border-radius:var(--input-radius);padding:10px 12px;gap:10px;border:1px solid rgba(255,255,255,0.03);transition:box-shadow var(--transition), border-color var(--transition), transform var(--transition), background var(--transition)}
-    .field svg{width:18px;height:18px;flex:0 0 18px;opacity:0.9}
-    .field input{flex:1;background:transparent;border:0;color:inherit;font-size:15px;padding:8px 4px;outline:none}
-    .field input::placeholder{color:rgba(255,255,255,0.45)}
-    .field:focus-within{box-shadow:0 6px 30px rgba(132,94,247,0.06);border-color:rgba(132,94,247,0.18)}
+    .field{position:relative;display:flex;align-items:center;background:rgba(255,255,255,0.8);border-radius:var(--input-radius);padding:10px 12px;gap:10px;border:1px solid rgba(0,0,0,0.1);transition:box-shadow var(--transition), border-color var(--transition), transform var(--transition), background var(--transition)}
+    .field svg{width:18px;height:18px;flex:0 0 18px;opacity:0.7}
+    .field input{flex:1;background:transparent;border:0;color:#1f2937;font-size:15px;padding:8px 4px;outline:none}
+    .field input::placeholder{color:rgba(0,0,0,0.45)}
+    .field:focus-within{box-shadow:0 6px 30px rgba(249,115,22,0.15);border-color:#f97316}
 
   /* Error message + shake animation for login */
-  #loginError{display:none;color:#ff4d4d;font-size:0.95rem;margin-top:8px;text-align:center;font-weight:600}
+  #loginError{display:none;color:#dc2626;font-size:0.95rem;margin-top:8px;text-align:center;font-weight:600}
   @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
   .shake{animation:shake 320ms ease}
 
     .muted{color:var(--muted);font-size:13px;margin-top:8px}
-    .muted a{color:inherit;font-weight:600;text-decoration:none;color:rgba(255,255,255,0.85)}
+    .muted a{color:inherit;font-weight:600;text-decoration:none;color:#4f46e5}
 
     .btn{border:0;cursor:pointer;padding:12px 14px;border-radius:var(--btn-radius);font-weight:700;color:white;background:linear-gradient(90deg,var(--accent-start),var(--accent-end));box-shadow:0 8px 28px rgba(132,94,247,0.12);transition:transform 220ms ease, box-shadow 220ms ease, opacity 220ms ease}
     .btn:active{transform:scale(0.995)}
@@ -114,10 +137,93 @@
   </style>
 </head>
 <body class="page page-auth">
-  <div class="bg-particles" aria-hidden="true">
-    <span class="s1"></span>
-    <span class="s2"></span>
-    <span class="s3"></span>
+  <div class="bg-images" aria-hidden="true">
+    <!-- Large PDF Document 1 -->
+    <div class="bg-doc-1">
+      <svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="10" width="180" height="260" rx="8" fill="#dc2626" stroke="#b91c1c" stroke-width="2"/>
+        <rect x="25" y="35" width="150" height="8" rx="4" fill="#ffffff"/>
+        <rect x="25" y="55" width="120" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
+        <rect x="25" y="75" width="140" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
+        <rect x="25" y="95" width="100" height="6" rx="3" fill="#ffffff" opacity="0.7"/>
+        <text x="100" y="180" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="16" font-weight="bold">PDF</text>
+        <circle cx="100" cy="210" r="18" fill="#ffffff" opacity="0.9"/>
+        <text x="100" y="215" text-anchor="middle" fill="#dc2626" font-family="Arial, sans-serif" font-size="12" font-weight="bold">1</text>
+      </svg>
+    </div>
+
+    <!-- Medium PDF Document 2 -->
+    <div class="bg-doc-2">
+      <svg viewBox="0 0 160 220" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="8" width="144" height="204" rx="6" fill="#2563eb" stroke="#1d4ed8" stroke-width="2"/>
+        <rect x="20" y="28" width="120" height="6" rx="3" fill="#ffffff"/>
+        <rect x="20" y="45" width="100" height="5" rx="2.5" fill="#ffffff" opacity="0.7"/>
+        <rect x="20" y="62" width="110" height="5" rx="2.5" fill="#ffffff" opacity="0.7"/>
+        <rect x="20" y="79" width="85" height="5" rx="2.5" fill="#ffffff" opacity="0.7"/>
+        <text x="80" y="140" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="14" font-weight="bold">PDF</text>
+        <circle cx="80" cy="165" r="14" fill="#ffffff" opacity="0.9"/>
+        <text x="80" y="169" text-anchor="middle" fill="#2563eb" font-family="Arial, sans-serif" font-size="10" font-weight="bold">2</text>
+      </svg>
+    </div>
+
+    <!-- Small PDF Document 3 -->
+    <div class="bg-doc-3">
+      <svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
+        <rect x="6" y="6" width="108" height="148" rx="5" fill="#16a34a" stroke="#15803d" stroke-width="2"/>
+        <rect x="15" y="22" width="90" height="5" rx="2.5" fill="#ffffff"/>
+        <rect x="15" y="35" width="75" height="4" rx="2" fill="#ffffff" opacity="0.7"/>
+        <rect x="15" y="47" width="85" height="4" rx="2" fill="#ffffff" opacity="0.7"/>
+        <rect x="15" y="59" width="65" height="4" rx="2" fill="#ffffff" opacity="0.7"/>
+        <text x="60" y="105" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="12" font-weight="bold">PDF</text>
+        <circle cx="60" cy="125" r="12" fill="#ffffff" opacity="0.9"/>
+        <text x="60" y="128" text-anchor="middle" fill="#16a34a" font-family="Arial, sans-serif" font-size="9" font-weight="bold">3</text>
+      </svg>
+    </div>
+
+    <!-- PDF Icon 1 -->
+    <div class="bg-icon-1">
+      <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="35" fill="#f97316" stroke="#ea580c" stroke-width="3"/>
+        <text x="40" y="50" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="24" font-weight="bold">📄</text>
+      </svg>
+    </div>
+
+    <!-- Document Stack -->
+    <div class="bg-stack">
+      <svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
+        <!-- Bottom document -->
+        <rect x="20" y="60" width="100" height="30" rx="3" fill="#7c3aed" stroke="#6d28d9" stroke-width="1"/>
+        <text x="70" y="78" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="10" font-weight="bold">PDF</text>
+        <!-- Middle document -->
+        <rect x="15" y="45" width="100" height="30" rx="3" fill="#06b6d4" stroke="#0891b2" stroke-width="1"/>
+        <text x="65" y="63" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="10" font-weight="bold">PDF</text>
+        <!-- Top document -->
+        <rect x="10" y="30" width="100" height="30" rx="3" fill="#10b981" stroke="#059669" stroke-width="1"/>
+        <text x="60" y="48" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="10" font-weight="bold">PDF</text>
+      </svg>
+    </div>
+
+    <!-- Floating PDF Icons -->
+    <div class="floating-pdf pdf-1">
+      <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="30" cy="30" r="25" fill="#8b5cf6" stroke="#7c3aed" stroke-width="2"/>
+        <text x="30" y="38" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold">📑</text>
+      </svg>
+    </div>
+
+    <div class="floating-pdf pdf-2">
+      <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="25" cy="25" r="20" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
+        <text x="25" y="32" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14" font-weight="bold">📄</text>
+      </svg>
+    </div>
+
+    <div class="floating-pdf pdf-3">
+      <svg viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="22.5" cy="22.5" r="18" fill="#ef4444" stroke="#dc2626" stroke-width="2"/>
+        <text x="22.5" y="29" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="13" font-weight="bold">📋</text>
+      </svg>
+    </div>
   </div>
 
   <main class="auth-main" style="z-index:1;display:flex;align-items:center;justify-content:center;width:100%">
