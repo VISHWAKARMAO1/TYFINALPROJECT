@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Merge PDF — Dr PDF Pro</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .merge-wrap{max-width:840px;margin:48px auto;padding:20px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));box-shadow:0 10px 40px rgba(2,6,23,0.6)}
+    .merge-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .log{margin-top:12px;color:var(--muted)}
+    .top-actions{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  </style>
+</head>
+<body class="page page-merge">
+  <header class="topbar">
+    <div class="brand"><div class="logo">DP</div><div class="title">Dr PDF Pro</div></div>
+    <div class="top-actions"><a class="nav-link" href="dashboard.html">← Back to Dashboard</a></div>
+  </header>
+
+  <main style="padding:28px">
+    <div class="merge-wrap">
+      <h1 style="margin-top:0">Merge PDF</h1>
+      <p class="muted">Select multiple PDF files in the order you want them merged. This runs in your browser (no server).</p>
+
+      <div class="merge-controls">
+        <input id="files" type="file" accept="application/pdf" multiple aria-label="Select PDF files" />
+        <button id="mergeBtn" class="btn btn-primary">Merge PDFs</button>
+        <a id="sampleLink" href="#" style="display:none">Download</a>
+      </div>
+
+      <div id="log" class="log" aria-live="polite"></div>
+      <div style="margin-top:16px;color:var(--muted);font-size:0.95rem">Note: Merging happens client-side using PDF-Lib. Large files may take time and use memory.</div>
+    </div>
+  </main>
+
+  <!-- PDF-Lib (for client-side PDF merging) -->
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+  <script>
+    // Auth guard: require client-side isAuthenticated flag
+    (function(){
+      var authed = false;
+      try{ authed = (localStorage.getItem('isAuthenticated') === 'true') || (sessionStorage.getItem('isAuthenticated') === 'true'); }catch(e){}
+      if(!authed){ window.location.replace('auth.html'); return; }
+
+      // Allow opening this page only when navigated from the dashboard tool button.
+      try{
+        var allowed = sessionStorage.getItem('tool_open_request') === 'merge';
+        // Also accept a query param fallback: ?from=dashboard (useful for open-in-new-tab/right-click)
+        var params = new URLSearchParams(window.location.search || '');
+        var fromParam = params.get('from') === 'dashboard';
+        // clear the session flag so reloads won't re-open unless navigated again
+        sessionStorage.removeItem('tool_open_request');
+        if(!allowed && !fromParam){ window.location.replace('dashboard.html'); return; }
+      }catch(e){}
+
+      const input = document.getElementById('files');
+      const mergeBtn = document.getElementById('mergeBtn');
+      const log = document.getElementById('log');
+
+      function setLog(msg){ if(log) log.textContent = msg; }
+
+      mergeBtn.addEventListener('click', async function(){
+        const files = Array.from(input.files || []).filter(f => f && f.type === 'application/pdf');
+        if(files.length === 0){ setLog('Please select one or more PDF files to merge.'); return; }
+        mergeBtn.disabled = true; setLog('Merging ' + files.length + ' file(s)…');
+        try{
+          const mergedPdf = await PDFLib.PDFDocument.create();
+          for(const file of files){
+            try{
+              const arrayBuffer = await file.arrayBuffer();
+              const src = await PDFLib.PDFDocument.load(arrayBuffer);
+              const count = src.getPageCount();
+              const indices = Array.from({length: count}, (v,i) => i);
+              const copied = await mergedPdf.copyPages(src, indices);
+              copied.forEach(p => mergedPdf.addPage(p));
+            }catch(err){ console.error('Error processing file', file.name, err); setLog('Error processing "' + file.name + '" — skipping.'); }
+          }
+
+          const mergedBytes = await mergedPdf.save();
+          const blob = new Blob([mergedBytes], { type: 'application/pdf' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a'); a.href = url; a.download = 'merged.pdf'; document.body.appendChild(a); a.click(); a.remove();
+          URL.revokeObjectURL(url);
+          setLog('Merge completed — download should start automatically.');
+        }catch(e){ console.error(e); setLog('Unexpected error: ' + (e && e.message ? e.message : e)); }
+        finally{ mergeBtn.disabled = false; }
+      });
+    })();
+  </script>
+</body>
+</html>

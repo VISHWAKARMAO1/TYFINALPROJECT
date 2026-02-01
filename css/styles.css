@@ -82,6 +82,7 @@ body{opacity:0;transform:translateY(6px);animation:siteFadeIn 420ms ease forward
 .tools{margin-top:14px}
 .tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
 .tool-card{padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:0 8px 30px rgba(2,6,23,0.6);transition:transform .28s cubic-bezier(.2,.9,.2,1),box-shadow .28s cubic-bezier(.2,.9,.2,1)}
+.tool-card{cursor:pointer}
 .tool-card:hover{transform:translateY(-10px) scale(1.02);box-shadow:0 22px 80px rgba(249,115,22,0.10)}
 .tool-card::before{content:'';position:absolute;inset:0;border-radius:12px;padding:1px;background:linear-gradient(90deg, rgba(249,115,22,0.06), rgba(79,70,229,0.03));opacity:0;transition:opacity .28s}
 .tool-card:hover::before{opacity:1}

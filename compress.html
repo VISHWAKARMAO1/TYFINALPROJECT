@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Compress PDF — Dr PDF Pro</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .wrap{max-width:840px;margin:48px auto;padding:20px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));box-shadow:0 10px 40px rgba(2,6,23,0.6)}
+    .controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .log{margin-top:12px;color:var(--muted)}
+  </style>
+</head>
+<body class="page page-compress">
+  <header class="topbar">
+    <div class="brand"><div class="logo">DP</div><div class="title">Dr PDF Pro</div></div>
+    <div class="top-actions"><a class="nav-link" href="dashboard.html">← Back to Dashboard</a></div>
+  </header>
+  <main style="padding:28px">
+    <div class="wrap">
+      <h1>Compress PDF</h1>
+      <p class="muted">Upload a PDF and click Compress. This demo performs a simple re-save (not true compression).</p>
+      <div class="controls">
+        <input id="file" type="file" accept="application/pdf">
+        <button id="compressBtn" class="btn btn-primary">Compress</button>
+      </div>
+      <div id="log" class="log"></div>
+    </div>
+  </main>
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+  <script>
+    (function(){
+      try{ var authed = (localStorage.getItem('isAuthenticated')==='true') || (sessionStorage.getItem('isAuthenticated')==='true'); if(!authed) { window.location.replace('auth.html'); return; } }catch(e){}
+      try{ var allowed = sessionStorage.getItem('tool_open_request') === 'compress'; var params = new URLSearchParams(window.location.search||''); var fromParam = params.get('from') === 'dashboard'; sessionStorage.removeItem('tool_open_request'); if(!allowed && !fromParam){ window.location.replace('dashboard.html'); return; } }catch(e){}
+
+      const btn = document.getElementById('compressBtn'); const fi = document.getElementById('file'); const log = document.getElementById('log');
+      function setLog(m){ if(log) log.textContent = m; }
+      btn.addEventListener('click', async ()=>{
+        const f = (fi.files||[])[0]; if(!f){ setLog('Please select a PDF first.'); return; }
+        setLog('Processing...');
+        try{
+          const arr = await f.arrayBuffer();
+          const src = await PDFLib.PDFDocument.load(arr);
+          const out = await PDFLib.PDFDocument.create();
+          const copied = await out.copyPages(src, Array.from({length: src.getPageCount()}, (_,i)=>i));
+          copied.forEach(p=>out.addPage(p));
+          const bytes = await out.save();
+          const blob = new Blob([bytes], { type: 'application/pdf' });
+          const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = (f.name||'file').replace(/\.pdf$/i,'') + '-compressed.pdf'; document.body.appendChild(a); a.click(); a.remove();
+          setLog('Done — download started (demo re-save).');
+        }catch(e){ console.error(e); setLog('Error: '+(e&&e.message?e.message:e)); }
+      });
+    })();
+  </script>
+</body>
+</html>

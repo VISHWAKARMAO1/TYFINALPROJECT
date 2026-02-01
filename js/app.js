@@ -195,26 +195,47 @@
     tools.forEach(t => {
       const card = document.createElement('div');
       card.className = 'tool-card';
+      card.setAttribute('data-tool', t.id);
+      card.setAttribute('tabindex', '0'); // keyboard focusable
+      card.setAttribute('role', 'button'); // accessibility semantics
+      // Card content without an explicit button
       card.innerHTML = `
         <div class="t-icon">${t.icon}</div>
         <h3>${t.title}</h3>
         <p class="muted">${t.desc}</p>
-        <div class="tool-actions"><a class="btn btn-primary" href="#" data-tool="${t.id}">Open Tool</a></div>
       `;
       grid.appendChild(card);
     });
 
-    // Optionally handle click on tools to open placeholders
+    // Handle click on tools: explicitly navigate to the tool page (more robust across environments)
     grid.addEventListener('click', (ev) => {
-      const a = ev.target.closest('a[data-tool]');
-      if (!a) return;
+      const card = ev.target.closest('.tool-card[data-tool]');
+      if (!card) return;
       ev.preventDefault();
-      const tool = a.dataset.tool;
-      // If demo mode, block access and force login
+      const tool = card.dataset.tool;
       const demoModeNow = localStorage.getItem('isDemo') === 'true';
-      if (demoModeNow){ try{ alert('Please log in to use this tool.'); }catch(e){}; window.location.replace('auth.html'); return; }
-      // Normal users: open placeholder
-      alert(`Opening ${tool} — tool pages are placeholders in this demo.`);
+      if (demoModeNow){
+        try{ alert('Please log in to use this tool.'); }catch(e){}
+        window.location.replace('auth.html');
+        return;
+      }
+      // Before navigating, set a short-lived session flag so the target page knows it was opened from the dashboard.
+      try{ sessionStorage.setItem('tool_open_request', tool); }catch(e){}
+      // Build href and add a fallback query param so right-click->open-in-new-tab still allows the tool page to detect origin.
+      try{
+        var href = tool + '.html';
+        if(href.indexOf('?') === -1) href = href + '?from=dashboard'; else href = href + '&from=dashboard';
+        window.location.href = href;
+      }catch(e){ window.location.href = tool + '.html'; }
+    });
+
+    // Keyboard activation (Enter/Space) for accessibility
+    grid.addEventListener('keydown', (ev) => {
+      if (ev.key !== 'Enter' && ev.key !== ' ') return;
+      const card = ev.target.closest('.tool-card[data-tool]');
+      if (!card) return;
+      ev.preventDefault();
+      card.click();
     });
   }
 

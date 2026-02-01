@@ -166,10 +166,10 @@
           mo.observe(grid, { childList:true });
         }
 
-        // Small UX: keyboard access - focus first tool button on page load
+        // Small UX: keyboard access - focus first tool card on page load
         setTimeout(()=>{
-          const firstBtn = document.querySelector('#toolGrid .btn[data-tool]');
-          if(firstBtn) firstBtn.setAttribute('tabindex','0');
+          const firstCard = document.querySelector('#toolGrid .tool-card');
+          if(firstCard) firstCard.focus();
         }, 600);
       });
     })();

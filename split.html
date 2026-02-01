@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Split PDF — Dr PDF Pro</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .split-wrap{max-width:840px;margin:48px auto;padding:20px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));box-shadow:0 10px 40px rgba(2,6,23,0.6)}
+    .controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .log{margin-top:12px;color:var(--muted)}
+    .option-row{display:flex;gap:8px;align-items:center;margin-top:8px}
+    input[type=number]{width:80px;padding:6px;border-radius:6px;border:1px solid rgba(0,0,0,0.08)}
+  </style>
+</head>
+<body class="page page-split">
+  <header class="topbar">
+    <div class="brand"><div class="logo">DP</div><div class="title">Dr PDF Pro</div></div>
+    <div class="top-actions"><a class="nav-link" href="dashboard.html">← Back to Dashboard</a></div>
+  </header>
+
+  <main style="padding:28px">
+    <div class="split-wrap">
+      <h1 style="margin-top:0">Split PDF</h1>
+      <p class="muted">Upload a PDF and either extract a page range or split every page into separate files. This runs in your browser (no server).</p>
+
+      <div class="controls">
+        <input id="file" type="file" accept="application/pdf" aria-label="Select a PDF file" />
+        <button id="loadBtn" class="btn btn-primary">Load PDF</button>
+        <button id="splitAllBtn" class="btn">Split All Pages</button>
+      </div>
+
+      <div id="actions" style="margin-top:12px;display:none">
+        <div>Pages: <span id="pageCount">0</span></div>
+        <div class="option-row">
+          <label><input type="radio" name="mode" value="range" checked> Extract range</label>
+          <input id="fromPage" type="number" min="1" value="1"> – <input id="toPage" type="number" min="1" value="1">
+          <button id="extractBtn" class="btn btn-primary">Extract Range</button>
+        </div>
+      </div>
+
+      <div id="log" class="log" aria-live="polite"></div>
+      <div style="margin-top:16px;color:var(--muted);font-size:0.95rem">Note: Splitting happens client-side using PDF-Lib. Large PDFs may use significant memory.</div>
+    </div>
+  </main>
+
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+  <script>
+    (function(){
+      // Auth guard
+      var authed = false;
+      try{ authed = (localStorage.getItem('isAuthenticated') === 'true') || (sessionStorage.getItem('isAuthenticated') === 'true'); }catch(e){}
+      if(!authed){ window.location.replace('auth.html'); return; }
+
+      // Allow opening only via dashboard button or ?from=dashboard
+      try{
+        var allowed = sessionStorage.getItem('tool_open_request') === 'split';
+        var params = new URLSearchParams(window.location.search || '');
+        var fromParam = params.get('from') === 'dashboard';
+        sessionStorage.removeItem('tool_open_request');
+        if(!allowed && !fromParam){ window.location.replace('dashboard.html'); return; }
+      }catch(e){}
+
+      const fileInput = document.getElementById('file');
+      const loadBtn = document.getElementById('loadBtn');
+      const splitAllBtn = document.getElementById('splitAllBtn');
+      const extractBtn = document.getElementById('extractBtn');
+      const actions = document.getElementById('actions');
+      const pageCountEl = document.getElementById('pageCount');
+      const fromEl = document.getElementById('fromPage');
+      const toEl = document.getElementById('toPage');
+      const log = document.getElementById('log');
+
+      let loadedPdf = null;
+      let loadedName = 'document';
+
+      function setLog(msg){ if(log) log.textContent = msg; }
+
+      loadBtn.addEventListener('click', async function(){
+        const f = (fileInput.files || [])[0];
+        if(!f){ setLog('Please choose a PDF file first.'); return; }
+        if(f.type !== 'application/pdf'){ setLog('Please select a valid PDF file.'); return; }
+        setLog('Loading PDF...');
+        try{
+          const arr = await f.arrayBuffer();
+          loadedPdf = await PDFLib.PDFDocument.load(arr);
+          loadedName = (f.name || 'document').replace(/\.pdf$/i, '');
+          const count = loadedPdf.getPageCount();
+          pageCountEl.textContent = String(count);
+          fromEl.max = count; toEl.max = count; toEl.value = count;
+          actions.style.display = 'block';
+          setLog('Loaded ' + count + ' page(s).');
+        }catch(e){ console.error(e); setLog('Failed to load PDF: ' + (e && e.message ? e.message : e)); }
+      });
+
+      // Extract range
+      extractBtn && extractBtn.addEventListener('click', async function(){
+        if(!loadedPdf){ setLog('Load a PDF first.'); return; }
+        const total = loadedPdf.getPageCount();
+        const from = Math.max(1, Math.min(total, parseInt(fromEl.value || '1')));
+        const to = Math.max(1, Math.min(total, parseInt(toEl.value || String(total))));
+        if(from > to){ setLog('Invalid range: start must be <= end.'); return; }
+        setLog('Extracting pages ' + from + '–' + to + '...');
+        try{
+          const out = await PDFLib.PDFDocument.create();
+          const indices = [];
+          for(let i = from-1; i <= to-1; i++) indices.push(i);
+          const copied = await out.copyPages(loadedPdf, indices);
+          copied.forEach(p => out.addPage(p));
+          const bytes = await out.save();
+          const blob = new Blob([bytes], { type: 'application/pdf' });
+          const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = loadedName + '-pages-' + from + '-' + to + '.pdf'; document.body.appendChild(a); a.click(); a.remove();
+          setLog('Extraction complete — download started.');
+        }catch(e){ console.error(e); setLog('Error extracting pages: ' + (e && e.message ? e.message : e)); }
+      });
+
+      // Split all pages (one download per page)
+      splitAllBtn.addEventListener('click', async function(){
+        const f = (fileInput.files || [])[0];
+        if(!f){ setLog('Please choose a PDF file first.'); return; }
+        setLog('Splitting all pages...');
+        try{
+          const arr = await f.arrayBuffer();
+          const src = await PDFLib.PDFDocument.load(arr);
+          const total = src.getPageCount();
+          for(let i=0;i<total;i++){
+            const out = await PDFLib.PDFDocument.create();
+            const [p] = await out.copyPages(src, [i]);
+            out.addPage(p);
+            const bytes = await out.save();
+            const blob = new Blob([bytes], { type: 'application/pdf' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = loadedName + '-page-' + (i+1) + '.pdf'; document.body.appendChild(a); a.click(); a.remove();
+            // slight delay to avoid overwhelming the browser
+            await new Promise(r => setTimeout(r, 120));
+          }
+          setLog('Split complete — downloads started.');
+        }catch(e){ console.error(e); setLog('Error splitting PDF: ' + (e && e.message ? e.message : e)); }
+      });
+
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PDF Editor — Dr PDF Pro</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .wrap{max-width:1000px;margin:48px auto;padding:20px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));box-shadow:0 10px 40px rgba(2,6,23,0.6)}
+    .controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .log{margin-top:12px;color:var(--muted)}
+  </style>
+</head>
+<body class="page page-editor">
+  <header class="topbar">
+    <div class="brand"><div class="logo">DP</div><div class="title">Dr PDF Pro</div></div>
+    <div class="top-actions"><a class="nav-link" href="dashboard.html">← Back to Dashboard</a></div>
+  </header>
+  <main style="padding:28px">
+    <div class="wrap">
+      <h1>PDF Editor</h1>
+      <p class="muted">Edit pages, text and annotations (placeholder). Real editor integration requires a UI library and richer PDF parsing.</p>
+      <div class="controls">
+        <input id="file" type="file" accept="application/pdf">
+        <button id="openBtn" class="btn btn-primary">Open Editor</button>
+      </div>
+      <div id="log" class="log"></div>
+    </div>
+  </main>
+  <script>
+    (function(){
+      try{ var authed = (localStorage.getItem('isAuthenticated')==='true') || (sessionStorage.getItem('isAuthenticated')==='true'); if(!authed) { window.location.replace('auth.html'); return; } }catch(e){}
+      try{ var allowed = sessionStorage.getItem('tool_open_request') === 'editor'; var params = new URLSearchParams(window.location.search||''); var fromParam = params.get('from') === 'dashboard'; sessionStorage.removeItem('tool_open_request'); if(!allowed && !fromParam){ window.location.replace('dashboard.html'); return; } }catch(e){}
+      document.getElementById('openBtn').addEventListener('click', ()=>{ alert('Editor is a placeholder. Integrate a PDF editor component for real editing.'); });
+    })();
+  </script>
+</body>
+</html>
